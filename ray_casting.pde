@@ -38,7 +38,8 @@ void draw() {
 }
 
 void setup() {
-  size(800, 450);
+  //size(800, 450);
+  fullScreen();
   raysX = new float[width];
   raysY = new float[width];
 }
