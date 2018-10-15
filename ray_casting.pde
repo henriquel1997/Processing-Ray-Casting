@@ -13,33 +13,61 @@ int[][] map = {
 int mapSquareSize = 20;
 int mapWindowSize = mapSquareSize*map.length;
                 
-float locationX = 5.5;
-float locationY = 5.5;
+float locationX = 3.8000016;
+float locationY = 9.500003;
 float fov = 20;
-float cameraAngle = 108;
+float cameraAngle = 301.72498;
 float[] raysX;
 float[] raysY;
-float maxDis = map.length;
+float maxDis = pow(map.length, 2);
+//float maxDis = pow(map.length, 2)*2;
 
 color colorPosition = color(178, 34, 34);
-color colorWall = color(0, 0, 0);
+color colorWall = color(192,192,192);
 color colorFloor = color(255, 255, 255);
 color colorRay = color(255,255,0);
 color colorSky = color(135,206,235);
 
 void draw() {
   clear();
+  cameraAngle = 540*((float)mouseX/width);
+  if(cameraAngle >= 360){
+    cameraAngle -= 360;
+  }
+  
+  if(keyPressed){
+    if(key == 'W' || key == 'w'){
+      locationY -= .1;
+    }
+    if(key == 'S' || key == 's'){
+      locationY += .1;
+    }
+    if(key == 'A' || key == 'a'){
+      locationX -= .1;
+    }
+    if(key == 'D' || key == 'd'){
+      locationX += .1;
+    }
+  }
+  println("X: "+locationX+" Y: "+locationY);
+  println("Angle: "+cameraAngle);
+  
   rayCastingVision();
   drawMap(width - mapWindowSize, height - mapWindowSize);
-  cameraAngle+=1;
-  if(cameraAngle >= 360){
-    cameraAngle = 0;
-  }
+  //mapSquareSize = width/map.length;
+  //drawMap(0, 0);
+  //save("raycasting_map.tif");
+  //exit();
 }
 
 void setup() {
-  //size(800, 450);
-  fullScreen();
+  size(800, 450);
+  //4K Vision
+  //size(3840, 2160);
+  //4K Map
+  //size(2160, 2160);
+  
+  //fullScreen();
   raysX = new float[width];
   raysY = new float[width];
 }
@@ -62,7 +90,7 @@ void rayCastingVision(){
     }
     if(angle < 0){
       angle += 360;
-    } //<>// //<>//
+    } //<>//
     float dirX = cos(radians(angle));
     float dirY = sin(radians(angle));
     
@@ -95,11 +123,15 @@ void rayCastingVision(){
     raysY[i] = y;
     
     //Desenha a parede
-    stroke(1);
-    float distance = (pow(locationX - x, 2) + pow(locationY - y, 2));
-    float wallHeight = height * (1 - distance/pow(maxDis, 2));
+    float distance = pow(locationX - x, 2) + pow(locationY - y, 2);
+    float z = distance*cos(fov);
+    float wallHeight = height * (1 - z/maxDis);
     float difTam = height - wallHeight;
-    color(colorWall);
+    if(floor(x) == x && floor(y) == y){
+      stroke(color(0));
+    }else{
+      stroke(lerpColor(color(0), colorWall, (maxDis-distance)/maxDis));
+    }
     line(i, difTam/2, i, height - difTam);
   }
 }
