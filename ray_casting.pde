@@ -28,15 +28,31 @@ color colorFloor = color(255, 255, 255);
 color colorRay = color(255,255,0);
 color colorSky = color(135,206,235);
 
+void setup() {
+  size(800, 450);
+  //4K Vision
+  //size(3840, 2160);
+  //4K Map
+  //size(2160, 2160);
+  
+  //fullScreen();
+  raysX = new float[width];
+  raysY = new float[width];
+}
+
 void draw() {
   clear();
-  cameraAngle = 540*((float)mouseX/width);
-  if(cameraAngle >= 360){
-    cameraAngle -= 360;
-  }
   
-  if(keyPressed){
-    if(key == 'W' || key == 'w'){
+  rayCastingVision();
+  drawMap(width - mapWindowSize, height - mapWindowSize);
+  //mapSquareSize = width/map.length;
+  //drawMap(0, 0);
+  //save("raycasting_map.tif");
+  //exit();
+}
+
+void keyPressed(){
+  if(key == 'W' || key == 'w'){
       locationY -= .1;
     }
     if(key == 'S' || key == 's'){
@@ -48,28 +64,13 @@ void draw() {
     if(key == 'D' || key == 'd'){
       locationX += .1;
     }
-  }
-  println("X: "+locationX+" Y: "+locationY);
-  println("Angle: "+cameraAngle);
-  
-  rayCastingVision();
-  drawMap(width - mapWindowSize, height - mapWindowSize);
-  //mapSquareSize = width/map.length;
-  //drawMap(0, 0);
-  //save("raycasting_map.tif");
-  //exit();
 }
 
-void setup() {
-  size(800, 450);
-  //4K Vision
-  //size(3840, 2160);
-  //4K Map
-  //size(2160, 2160);
-  
-  //fullScreen();
-  raysX = new float[width];
-  raysY = new float[width];
+void mouseMoved(){
+  cameraAngle = 540*((float)mouseX/width);
+  if(cameraAngle >= 360){
+    cameraAngle -= 360;
+  }
 }
 
 void rayCastingVision(){
